@@ -1,0 +1,392 @@
+/* base.css - Shared styles for all themes */
+
+/* Basic Reset & Body */
+body {
+    margin: 0;
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Layout Containers */
+.site-header {
+    padding: 15px; /* Adjusted for full-width */
+    border-bottom: 1px solid #eee;
+}
+
+.header-content {
+    /* max-width and margin removed for full-width */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+main {
+    flex-grow: 1; /* Ensures main content takes up available space */
+}
+
+.page {
+    /* max-width and margin removed for full-width */
+    padding: 40px 15px; /* Adjusted padding as requested */
+}
+
+.site-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    font-size: 0.9em;
+    color: #888;
+}
+
+/* Header Elements */
+.site-title {
+    margin: 0;
+    font-size: 1.5em;
+    white-space: nowrap;
+}
+
+.search-container {
+    display: flex;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+#search-input {
+    width: 100%;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+}
+
+#search-btn {
+    border-radius: 0 5px 5px 0;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.theme-switcher select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+/* Typography */
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+h1 { font-size: 2.5em; }
+h2 { font-size: 1.8em; }
+p { margin-top: 0; }
+a { text-decoration: none; }
+
+/* Forms & Buttons */
+textarea {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1em;
+    box-sizing: border-box; /* Important for width 100% */
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.feedback-message {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+/* Post & Comment Structure (un-styled, for layout) */
+.page-intro {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.content-notification {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #f0f7ff;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+    font-size: 0.95em;
+}
+
+.comments-section {
+    margin-bottom: 40px;
+}
+
+.comment-item {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #eee;
+}
+
+.comment-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.post-meta, .comment-meta {
+    font-size: 0.9em;
+    color: #888;
+}
+
+.post-meta span {
+    margin-right: 15px;
+}
+
+.post-meta i {
+    margin-right: 5px;
+}
+
+.view-details-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.post-full-content {
+    font-size: 1.1em;
+    line-height: 1.7;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 40px 0;
+}
+
+/* Home Page Layout */
+.home-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr; /* Sidebar width and main content */
+    gap: 30px;
+}
+
+#post-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    border: none; /* Override default list border */
+    padding: 0;
+}
+
+.post-item {
+    /* border: 1px solid #eee; */ /* Replaced by box-shadow in themes */
+    border-radius: 8px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Ensures image corners are rounded */
+}
+
+.post-image {
+    width: 100%;
+    height: 150px; /* Fixed height for all images */
+    object-fit: cover; /* Crop image to fit */
+}
+
+.post-content {
+    padding: 15px;
+}
+
+.post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Sidebar Styles */
+.sidebar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sidebar-block {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.sidebar-block h3 {
+    font-size: 1.1em;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+}
+
+.sidebar-block ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-block li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    color: #333;
+}
+
+.sidebar-block li a:hover,
+.sidebar-block li a.active {
+    background-color: #f0f0f0;
+}
+
+.sidebar-block li a i {
+    width: 20px;
+    text-align: center;
+}
+
+.ranking-block li {
+    padding: 5px 0;
+    font-size: 0.95em;
+}
+
+.ranking-block a {
+    color: #555;
+}
+
+.ranking-block a:hover {
+    text-decoration: underline;
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.8em;
+    color: #aaa;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Floating Action Buttons (FAB) */
+.fab-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fab:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transform: translateY(-3px);
+}
+
+#fab-create-post {
+    background-color: #007bff; /* A standard blue */
+}
+
+#fab-back-to-top {
+    background-color: #6c757d; /* A neutral grey */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .home-layout {
+        grid-template-columns: 1fr; /* Stack sidebar and main content */
+    }
+
+    .sidebar-left {
+        flex-direction: row; /* Display blocks side-by-side */
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .sidebar-block {
+        flex-grow: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-left {
+        flex-direction: column; /* Stack blocks on very small screens */
+    }
+}

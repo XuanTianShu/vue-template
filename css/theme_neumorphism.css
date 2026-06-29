@@ -1,0 +1,152 @@
+/* theme_neumorphism.css - Neumorphism Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --bg-color: #e0e5ec;
+    --text-color: #5a667a;
+    --primary-color: #4a77e5;
+    --shadow-light: #ffffff;
+    --shadow-dark: #a3b1c6;
+    --font-main: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+}
+
+/* --- Neumorphic Base Styles --- */
+.neumorphic-flat {
+    background: var(--bg-color);
+    border-radius: 20px;
+    box-shadow: 
+        -7px -7px 20px 0px var(--shadow-light),
+        7px 7px 20px 0px var(--shadow-dark);
+    transition: box-shadow 0.3s ease;
+}
+
+.neumorphic-inset {
+    background: var(--bg-color);
+    border-radius: 20px;
+    box-shadow: 
+        inset -7px -7px 20px 0px var(--shadow-light),
+        inset 7px 7px 20px 0px var(--shadow-dark);
+}
+
+/* --- Components --- */
+.site-header,
+.site-footer,
+.post-item,
+.sidebar-block,
+.modal-content {
+    background: var(--bg-color);
+    border-radius: 20px;
+    box-shadow: 
+        -7px -7px 20px 0px var(--shadow-light),
+        7px 7px 20px 0px var(--shadow-dark);
+    transition: box-shadow 0.3s ease;
+    border: none; /* Important: Neumorphism has no borders */
+}
+
+.site-header, .site-footer {
+    border-radius: 0;
+}
+
+.post-item:hover {
+    box-shadow: 
+        -4px -4px 15px 0px var(--shadow-light),
+        4px 4px 15px 0px var(--shadow-dark);
+}
+
+/* --- Typography & Links --- */
+.site-title, h1, h2, h3 {
+    color: var(--text-color);
+}
+
+a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.post-meta, .comment-meta {
+    color: #8a99b1;
+}
+
+/* --- Forms & Buttons --- */
+#search-input, .theme-switcher select, textarea {
+    background: var(--bg-color);
+    border: none;
+    border-radius: 15px;
+    color: var(--text-color);
+    font-family: var(--font-main);
+    box-shadow: 
+        inset -5px -5px 10px 0px var(--shadow-light),
+        inset 5px 5px 10px 0px var(--shadow-dark);
+    padding: 10px 15px;
+}
+
+#search-input::placeholder, textarea::placeholder {
+    color: #a3b1c6;
+}
+
+#search-input:focus, textarea:focus {
+    outline: none;
+}
+
+button, .fab {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    box-shadow: 
+        -5px -5px 10px 0px var(--shadow-light),
+        5px 5px 10px 0px var(--shadow-dark);
+    transition: box-shadow 0.2s ease-out, color 0.2s ease-out;
+}
+
+button:hover, .fab:hover {
+    color: var(--primary-color);
+}
+
+button:active, .fab:active {
+    box-shadow: 
+        inset -5px -5px 10px 0px var(--shadow-light),
+        inset 5px 5px 10px 0px var(--shadow-dark);
+    color: var(--primary-color);
+}
+
+.fab {
+    border-radius: 50%;
+}
+
+#fab-create-post {
+    color: var(--primary-color);
+}
+
+.modal-close-btn {
+    background: none;
+    box-shadow: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+.modal-close-btn:hover {
+    color: var(--primary-color);
+}
+.modal-close-btn:active {
+    box-shadow: none;
+}
+
+/* --- Sidebar --- */
+.sidebar-block li a.active, .sidebar-block li a:hover {
+    color: var(--primary-color);
+}
+.sidebar-block li a {
+    transition: color 0.2s;
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Board - Multi-Theme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link id="theme-stylesheet" rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Basic Layout Styles */
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .hidden { display: none !important; }
+        .page { padding: 20px; }
+        .theme-switcher { position: fixed; top: 10px; right: 10px; z-index: 1000; }
+        .theme-switcher select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="header-content">
+            <h1 class="site-title">Anonymous Board</h1>
+            <div class="search-container">
+                <input type="search" id="search-input" placeholder="Search posts...">
+                <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
+            <div class="theme-switcher">
+                <select id="theme-selector">
+                    <option value="modern">Modern</option>
+            <option value="cyberpunk_new">Cyberpunk</option>
+            <option value="neumorphism">Neumorphism</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page: Home (List of Posts) -->
+        <div id="page-home" class="page">
+            <div class="home-layout">
+                <!-- Left Sidebar -->
+                <aside class="sidebar-left">
+                    <div class="sidebar-block category-block">
+                        <h3>Categories</h3>
+                        <ul>
+                            <li><a href="#" class="active"><i class="fa-solid fa-bars"></i> All</a></li>
+                            <li><a href="#"><i class="fa-solid fa-file-alt"></i> Articles</a></li>
+                            <li><a href="#"><i class="fa-solid fa-video"></i> Videos</a></li>
+                            <li><a href="#"><i class="fa-solid fa-image"></i> Pictures</a></li>
+                            <li><a href="#"><i class="fa-solid fa-music"></i> Audio</a></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-block ranking-block">
+                        <h3>Trending</h3>
+                        <ul>
+                            <li><a href="#">#1 - The state of web development in 2026</a></li>
+                            <li><a href="#">#2 - Is pixel art making a comeback?</a></li>
+                            <li><a href="#">#3 - My journey into brutalist design</a></li>
+                            <li><a href="#">#4 - Tips for staying anonymous online</a></li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <div class="main-content">
+                    <div class="content-notification">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>Please be discerning and verify information. Don't be misled. To post, please use the official client.</span>
+                    </div>
+                    <div class="post-list-container">
+                        <h2>Latest Posts</h2>
+                        <div id="post-list">
+                            <!-- Dummy Post 1 -->
+                            <div class="post-item" data-id="post-1">
+                                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Abstract technology background" class="post-image">
+                                <div class="post-content">
+                                    <p>Just discovered this place. It's pretty cool to have a space to just vent without anyone knowing who you are. Sometimes you just need to shout into the void, you know?</p>
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-heart"></i> 15</span>
+                                        <span><i class="fa-solid fa-comment"></i> 3 comments</span>
+                                        <a href="#" class="view-details-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dummy Post 2 -->
+                            <div class="post-item" data-id="post-2">
+                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Retro gaming setup" class="post-image">
+                                <div class="post-content">
+                                    <p>I've been working on a personal project for months, a retro-style pixel art game. It's so much harder than I thought, but seeing a character move for the first time was pure magic. Don't give up on your dreams, people!</p>
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-heart"></i> 42</span>
+                                        <span><i class="fa-solid fa-comment"></i> 8 comments</span>
+                                        <a href="#" class="view-details-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dummy Post 3 (New) -->
+                            <div class="post-item" data-id="post-3">
+                                <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Cozy desk with a journal" class="post-image">
+                                <div class="post-content">
+                                    <p>Has anyone tried the new "Journal" theme? It feels so cozy and reminds me of writing in a real notebook. The lined textarea is a brilliant touch.</p>
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-heart"></i> 28</span>
+                                        <span><i class="fa-solid fa-comment"></i> 5 comments</span>
+                                        <a href="#" class="view-details-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dummy Post 4 (New) -->
+                            <div class="post-item" data-id="post-4">
+                                <img src="https://images.unsplash.com/photo-1581333100576-b73befd11439?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Cyberpunk city street" class="post-image">
+                                <div class="post-content">
+                                    <p>The cyberpunk theme is insane! The glowing text and neon borders make me feel like I'm hacking into the matrix. 10/10 design.</p>
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-heart"></i> 55</span>
+                                        <span><i class="fa-solid fa-comment"></i> 12 comments</span>
+                                        <a href="#" class="view-details-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                             <!-- Dummy Post 5 (New) -->
+                            <div class="post-item" data-id="post-5">
+                                <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80" alt="Colorful abstract question marks" class="post-image">
+                                <div class="post-content">
+                                    <p>A question for the void: What's one small thing that made you happy this week?</p>
+                                    <div class="post-meta">
+                                        <span><i class="fa-solid fa-heart"></i> 99+</span>
+                                        <span><i class="fa-solid fa-comment"></i> 37 comments</span>
+                                        <a href="#" class="view-details-link">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page: Detail (Single Post with Comments) -->
+        <div id="page-detail" class="page hidden">
+            <div class="page-intro">
+                <a href="#" id="back-to-home-link">&larr; Back to all posts</a>
+            </div>
+            <div class="post-full-content">
+                <p id="detail-post-body">I've been working on a personal project for months, a retro-style pixel art game. It's so much harder than I thought, but seeing a character move for the first time was pure magic. Don't give up on your dreams, people!</p>
+            </div>
+            <hr>
+            <div class="comments-section">
+                <h2>Comments</h2>
+                <div id="comment-list">
+                    <!-- Dummy Comment 1 -->
+                    <div class="comment-item">
+                        <p>That's awesome! What engine are you using?</p>
+                        <span class="comment-meta">5 hours ago</span>
+                    </div>
+                    <!-- Dummy Comment 2 -->
+                    <div class="comment-item">
+                        <p>I feel you. The struggle is real but so rewarding. Keep it up!</p>
+                        <span class="comment-meta">3 hours ago</span>
+                    </div>
+                     <!-- Dummy Comment 3 -->
+                    <div class="comment-item">
+                        <p>Any screenshots you can share? Would love to see it.</p>
+                        <span class="comment-meta">1 hour ago</span>
+                    </div>
+                </div>
+                <div class="comment-form-container">
+                    <h3>Leave a Comment</h3>
+                    <textarea id="new-comment-content" placeholder="Add to the discussion..."></textarea>
+                    <button id="submit-comment-btn">Comment</button>
+                    <p id="comment-feedback" class="feedback-message"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Anonymous Board. All rights reserved.</p>
+    </footer>
+
+    <!-- Post Creation Modal -->
+    <div id="post-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            <h3>Create a New Post</h3>
+            <textarea id="new-post-content" placeholder="What's on your mind?"></textarea>
+            <button id="submit-post-btn">Post</button>
+            <p id="post-feedback" class="feedback-message"></p>
+        </div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+        <button id="fab-create-post" class="fab" title="Create Post">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+        <button id="fab-back-to-top" class="fab hidden" title="Back to Top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeSelector = document.getElementById('theme-selector');
+            const themeStylesheet = document.getElementById('theme-stylesheet');
+            const pages = {
+                home: document.getElementById('page-home'),
+                detail: document.getElementById('page-detail')
+            };
+
+            // --- Theme Switching Logic ---
+            function setTheme(themeName) {
+                const basePath = 'css/base.css';
+                const themePath = `css/theme_${themeName}.css`;
+                
+                // Create a new link element for the theme
+                const newLink = document.createElement('link');
+                newLink.rel = 'stylesheet';
+                newLink.href = themePath;
+                newLink.id = 'theme-stylesheet-dynamic';
+
+                // Remove old dynamic theme if it exists
+                const oldLink = document.getElementById('theme-stylesheet-dynamic');
+                if (oldLink) {
+                    document.head.removeChild(oldLink);
+                }
+                
+                // Append the new theme stylesheet after the base stylesheet
+                const baseLink = document.getElementById('theme-stylesheet');
+                baseLink.insertAdjacentElement('afterend', newLink);
+
+                localStorage.setItem('selectedTheme', themeName);
+                console.log(`Theme changed to: ${themeName}`);
+            }
+
+            themeSelector.addEventListener('change', () => {
+                setTheme(themeSelector.value);
+            });
+
+            // Load saved theme or default to modern
+            const savedTheme = localStorage.getItem('selectedTheme') || 'modern';
+            themeSelector.value = savedTheme;
+            setTheme(savedTheme);
+
+
+            // --- Page Navigation Logic ---
+            function showPage(pageName) {
+                Object.values(pages).forEach(page => page.classList.add('hidden'));
+                if (pages[pageName]) {
+                    pages[pageName].classList.remove('hidden');
+                }
+                window.scrollTo(0, 0);
+            }
+
+            // Event listener for "View Details" links
+            document.getElementById('post-list').addEventListener('click', (e) => {
+                if (e.target.classList.contains('view-details-link')) {
+                    e.preventDefault();
+                    // In a real app, you'd pass the post ID to populate the detail page
+                    showPage('detail');
+                }
+            });
+
+            // Event listener for "Back to Home" link
+            document.getElementById('back-to-home-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage('home');
+            });
+
+            // Initially show the home page
+            showPage('home');
+
+            // --- Modal Logic ---
+            const postModalOverlay = document.getElementById('post-modal-overlay');
+            const fabCreatePost = document.getElementById('fab-create-post');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+
+            fabCreatePost.addEventListener('click', () => {
+                postModalOverlay.classList.remove('hidden');
+            });
+
+            modalCloseBtn.addEventListener('click', () => {
+                postModalOverlay.classList.add('hidden');
+            });
+
+            postModalOverlay.addEventListener('click', (e) => {
+                if (e.target === postModalOverlay) {
+                    postModalOverlay.classList.add('hidden');
+                }
+            });
+
+            // --- Back to Top FAB Logic ---
+            const fabBackToTop = document.getElementById('fab-back-to-top');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    fabBackToTop.classList.remove('hidden');
+                } else {
+                    fabBackToTop.classList.add('hidden');
+                }
+            });
+
+            fabBackToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
