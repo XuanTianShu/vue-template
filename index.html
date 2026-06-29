@@ -141,37 +141,53 @@
         <!-- Page: Detail (Single Post with Comments) -->
         <div id="page-detail" class="page hidden">
             <div class="page-intro">
-                <a href="#" id="back-to-home-link">&larr; Back to all posts</a>
+                <a href="#" id="back-to-home-link" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to all posts</a>
             </div>
-            <div class="post-full-content">
-                <p id="detail-post-body">I've been working on a personal project for months, a retro-style pixel art game. It's so much harder than I thought, but seeing a character move for the first time was pure magic. Don't give up on your dreams, people!</p>
-            </div>
-            <hr>
-            <div class="comments-section">
-                <h2>Comments</h2>
-                <div id="comment-list">
-                    <!-- Dummy Comment 1 -->
-                    <div class="comment-item">
-                        <p>That's awesome! What engine are you using?</p>
-                        <span class="comment-meta">5 hours ago</span>
+            <div class="post-detail-layout">
+                <div class="post-detail-main">
+                    <img id="detail-post-image" src="" alt="Post image" class="detail-post-image">
+                    <div class="post-full-content">
+                        <p id="detail-post-body"></p>
+                        <div id="detail-post-meta" class="post-meta">
+                            <!-- Meta content will be populated by JS -->
+                        </div>
                     </div>
-                    <!-- Dummy Comment 2 -->
-                    <div class="comment-item">
-                        <p>I feel you. The struggle is real but so rewarding. Keep it up!</p>
-                        <span class="comment-meta">3 hours ago</span>
-                    </div>
-                     <!-- Dummy Comment 3 -->
-                    <div class="comment-item">
-                        <p>Any screenshots you can share? Would love to see it.</p>
-                        <span class="comment-meta">1 hour ago</span>
+                    <hr>
+                    <div class="comments-section">
+                        <h2><span id="detail-comment-count"></span> Comments</h2>
+                        <div id="comment-list">
+                            <!-- Comments will be populated by JS -->
+                        </div>
+                        <div class="comment-form-container">
+                            <h3>Leave a Comment</h3>
+                            <div class="comment-form">
+                                <img src="https://i.pravatar.cc/50?u=current_user" alt="Your avatar" class="comment-avatar">
+                                <textarea id="new-comment-content" placeholder="Add to the discussion..."></textarea>
+                            </div>
+                            <button id="submit-comment-btn">Comment</button>
+                            <p id="comment-feedback" class="feedback-message"></p>
+                        </div>
                     </div>
                 </div>
-                <div class="comment-form-container">
-                    <h3>Leave a Comment</h3>
-                    <textarea id="new-comment-content" placeholder="Add to the discussion..."></textarea>
-                    <button id="submit-comment-btn">Comment</button>
-                    <p id="comment-feedback" class="feedback-message"></p>
-                </div>
+                <aside class="post-detail-sidebar">
+                    <div class="sidebar-block author-block">
+                        <h3>Author</h3>
+                        <div class="author-info">
+                            <img src="https://i.pravatar.cc/80?u=post_author" alt="Author's avatar" class="author-avatar">
+                            <h4>AnonymousUser</h4>
+                            <p>Just a voice in the void. Sharing thoughts and finding connections.</p>
+                            <button class="follow-btn">Follow</button>
+                        </div>
+                    </div>
+                     <div class="sidebar-block related-posts-block">
+                        <h3>Related Posts</h3>
+                        <ul>
+                            <li><a href="#">Exploring the depths of the web</a></li>
+                            <li><a href="#">The philosophy of anonymity</a></li>
+                            <li><a href="#">A look at modern UI trends</a></li>
+                        </ul>
+                    </div>
+                </aside>
             </div>
         </div>
     </main>
@@ -181,7 +197,7 @@
     </footer>
 
     <!-- Post Creation Modal -->
-    <div id="post-modal-overlay" class="modal-overlay hidden">
+    <div id="post-modal-overlay" class="modal-overlay">
         <div class="modal-content">
             <button id="modal-close-btn" class="modal-close-btn">&times;</button>
             <h3>Create a New Post</h3>
@@ -204,7 +220,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const themeSelector = document.getElementById('theme-selector');
-            const themeStylesheet = document.getElementById('theme-stylesheet');
             const pages = {
                 home: document.getElementById('page-home'),
                 detail: document.getElementById('page-detail')
@@ -212,40 +227,24 @@
 
             // --- Theme Switching Logic ---
             function setTheme(themeName) {
-                const basePath = 'css/base.css';
                 const themePath = `css/theme_${themeName}.css`;
-                
-                // Create a new link element for the theme
-                const newLink = document.createElement('link');
-                newLink.rel = 'stylesheet';
-                newLink.href = themePath;
-                newLink.id = 'theme-stylesheet-dynamic';
-
-                // Remove old dynamic theme if it exists
-                const oldLink = document.getElementById('theme-stylesheet-dynamic');
-                if (oldLink) {
-                    document.head.removeChild(oldLink);
+                let themeLink = document.getElementById('theme-stylesheet-dynamic');
+                if (!themeLink) {
+                    themeLink = document.createElement('link');
+                    themeLink.rel = 'stylesheet';
+                    themeLink.id = 'theme-stylesheet-dynamic';
+                    document.head.appendChild(themeLink);
                 }
-                
-                // Append the new theme stylesheet after the base stylesheet
-                const baseLink = document.getElementById('theme-stylesheet');
-                baseLink.insertAdjacentElement('afterend', newLink);
-
+                themeLink.href = themePath;
                 localStorage.setItem('selectedTheme', themeName);
-                console.log(`Theme changed to: ${themeName}`);
             }
 
-            themeSelector.addEventListener('change', () => {
-                setTheme(themeSelector.value);
-            });
-
-            // Load saved theme or default to modern
+            themeSelector.addEventListener('change', () => setTheme(themeSelector.value));
             const savedTheme = localStorage.getItem('selectedTheme') || 'modern';
             themeSelector.value = savedTheme;
             setTheme(savedTheme);
 
-
-            // --- Page Navigation Logic ---
+            // --- Page Navigation & Data Population Logic ---
             function showPage(pageName) {
                 Object.values(pages).forEach(page => page.classList.add('hidden'));
                 if (pages[pageName]) {
@@ -254,46 +253,126 @@
                 window.scrollTo(0, 0);
             }
 
-            // Event listener for "View Details" links
+            function populateDetailPage(postElement) {
+                const postImage = postElement.querySelector('.post-image').src;
+                const postBody = postElement.querySelector('p').textContent;
+                const postLikes = postElement.querySelector('.fa-heart').parentElement.textContent.trim();
+                const postCommentCount = postElement.querySelector('.fa-comment').parentElement.textContent.trim();
+
+                document.getElementById('detail-post-image').src = postImage;
+                document.getElementById('detail-post-body').textContent = postBody;
+                
+                const metaContainer = document.getElementById('detail-post-meta');
+                metaContainer.innerHTML = `
+                    <span><i class="fa-solid fa-heart"></i> ${postLikes}</span>
+                    <span><i class="fa-solid fa-comment"></i> ${postCommentCount}</span>
+                `;
+                
+                document.getElementById('detail-comment-count').textContent = postCommentCount.split(' ')[0];
+
+                const commentList = document.getElementById('comment-list');
+                commentList.innerHTML = `
+                    <div class="comment-item">
+                        <p>This is a great observation! Thanks for sharing.</p>
+                        <span class="comment-meta">2 hours ago</span>
+                    </div>
+                    <div class="comment-item">
+                        <p>I totally agree. It's something more people should think about.</p>
+                        <span class="comment-meta">1 hour ago</span>
+                    </div>
+                `;
+            }
+
             document.getElementById('post-list').addEventListener('click', (e) => {
-                if (e.target.classList.contains('view-details-link')) {
+                const postItem = e.target.closest('.post-item');
+                if (postItem) {
                     e.preventDefault();
-                    // In a real app, you'd pass the post ID to populate the detail page
+                    populateDetailPage(postItem);
                     showPage('detail');
                 }
             });
 
-            // Event listener for "Back to Home" link
             document.getElementById('back-to-home-link').addEventListener('click', (e) => {
                 e.preventDefault();
                 showPage('home');
             });
 
-            // Initially show the home page
-            showPage('home');
+            // --- Comment Submission Logic ---
+            document.getElementById('submit-comment-btn').addEventListener('click', () => {
+                const commentInput = document.getElementById('new-comment-content');
+                const commentText = commentInput.value.trim();
+                const commentList = document.getElementById('comment-list');
 
-            // --- Modal Logic ---
+                if (commentText) {
+                    const newComment = document.createElement('div');
+                    newComment.classList.add('comment-item');
+                    newComment.innerHTML = `
+                        <p>${commentText}</p>
+                        <span class="comment-meta">Just now</span>
+                    `;
+                    commentList.prepend(newComment);
+                    commentInput.value = '';
+                }
+            });
+
+            // --- Modal & Post Submission Logic ---
             const postModalOverlay = document.getElementById('post-modal-overlay');
             const fabCreatePost = document.getElementById('fab-create-post');
             const modalCloseBtn = document.getElementById('modal-close-btn');
+            const submitPostBtn = document.getElementById('submit-post-btn');
+            const newPostContent = document.getElementById('new-post-content');
+            const postList = document.getElementById('post-list');
+            const postFeedback = document.getElementById('post-feedback');
 
-            fabCreatePost.addEventListener('click', () => {
-                postModalOverlay.classList.remove('hidden');
-            });
+            function showModal() {
+                postModalOverlay.classList.add('is-visible');
+            }
 
-            modalCloseBtn.addEventListener('click', () => {
-                postModalOverlay.classList.add('hidden');
-            });
+            function hideModal() {
+                postModalOverlay.classList.remove('is-visible');
+            }
 
+            fabCreatePost.addEventListener('click', showModal);
+            modalCloseBtn.addEventListener('click', hideModal);
             postModalOverlay.addEventListener('click', (e) => {
-                if (e.target === postModalOverlay) {
-                    postModalOverlay.classList.add('hidden');
+                if (e.target === postModalOverlay) hideModal();
+            });
+
+            submitPostBtn.addEventListener('click', () => {
+                const content = newPostContent.value.trim();
+                if (content) {
+                    const newPost = document.createElement('div');
+                    newPost.classList.add('post-item');
+                    
+                    const randomImageId = Math.floor(Math.random() * 1000);
+                    newPost.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" alt="Newly created post" class="post-image">
+                        <div class="post-content">
+                            <p>${content}</p>
+                            <div class="post-meta">
+                                <span><i class="fa-solid fa-heart"></i> 0</span>
+                                <span><i class="fa-solid fa-comment"></i> 0 comments</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    postList.prepend(newPost);
+                    newPostContent.value = '';
+                    postFeedback.textContent = 'Post created successfully!';
+                    
+                    setTimeout(() => {
+                        newPost.classList.add('is-visible');
+                        hideModal();
+                        postFeedback.textContent = '';
+                    }, 300);
+
+                } else {
+                    postFeedback.textContent = 'Please write something.';
                 }
             });
 
             // --- Back to Top FAB Logic ---
             const fabBackToTop = document.getElementById('fab-back-to-top');
-
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
                     fabBackToTop.classList.remove('hidden');
@@ -301,13 +380,20 @@
                     fabBackToTop.classList.add('hidden');
                 }
             });
+            fabBackToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-            fabBackToTop.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
+            // --- Initial Page Load ---
+            function animatePostList() {
+                const postItems = document.querySelectorAll('.post-item');
+                postItems.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('is-visible');
+                    }, index * 100);
                 });
-            });
+            }
+
+            showPage('home');
+            animatePostList();
         });
     </script>
 
