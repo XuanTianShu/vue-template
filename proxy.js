@@ -1,136 +1,80 @@
-// proxy.js (Single-File I/O Version with CWD support - ES Module Syntax)
-import fs from 'fs';
-import path from 'path';
-import { exec } from 'child_process';
-import { fileURLToPath } from 'url';
+// proxy.js (带有详细中文注释和日志的版本)
+// 功能：通过轮询监视 io.json 文件，当检测到新命令时执行它，并将执行结果写回文件。
 
-// Get __dirname in ES module scope
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import fs from 'fs/promises';      // 导入 Node.js 的文件系统模块 (Promise版本)，用于异步读写文件。
+import path from 'path';            // 导入路径处理模块，用于处理跨操作系统的文件路径。
+import { exec } from 'child_process'; // 导入子进程模块中的 exec 函数，用于执行外部 shell 命令。
 
-// IO file path (relative to skill directory)
-const IO_FILE = path.join(__dirname, 'io.json');
-const SKILL_DIR = __dirname;
+// 定义 io.json 文件的绝对路径，确保脚本在任何位置运行都能准确找到它。
+const ioFilePath = path.resolve(process.cwd(), 'io.json');
+// 轮询间隔，单位毫秒。即每隔 500ms 检查一次 io.json 文件是否有变化。
+const pollInterval = 500;
+// 创建一个锁（标志位），防止在前一个命令尚未完成时，脚本又去处理下一个命令，避免并发冲突。
+let isProcessing = false;
 
-// Helper function to check if a command exists in PATH
-function which(cmd) {
-    const processEnv = process.env;
-    // On Windows, PATHEXT is a list of extensions to check.
-    // On other systems, we can default to an empty array.
-    const pathExt = (processEnv.PATHEXT || '').split(';').filter(Boolean);
-    const paths = (processEnv.PATH || '').split(path.delimiter);
+console.log(`[${new Date().toISOString()}] [信息] 代理脚本启动。`);
+console.log(`[${new Date().toISOString()}] [信息] 正在监视文件: ${ioFilePath}`);
 
-    // Check if the command itself is a path that exists
-    if (fs.existsSync(cmd)) {
-        return cmd;
-    }
+// 核心处理函数，用于读取、执行和回写命令。
+const processCommand = async () => {
+  // 如果当前正在处理一个命令（锁被占用），则直接返回，等待下一次轮询。
+  if (isProcessing) {
+    return;
+  }
 
-    for (const p of paths) {
-        const fullPath = path.join(p, cmd);
-        
-        // Check for the command without any extension
-        if (fs.existsSync(fullPath) && !fs.statSync(fullPath).isDirectory()) {
-            return fullPath;
+  try {
+    // 异步读取 io.json 文件的内容。
+    const content = await fs.readFile(ioFilePath, 'utf-8');
+    // 将读取到的字符串内容解析为 JSON 对象。
+    const data = JSON.parse(content);
+
+    // 检查文件状态是否为 'pending'，这表示有一个新命令需要执行。
+    if (data.status === 'pending') {
+      isProcessing = true; // 立刻锁定，表示开始处理命令。
+      console.log(`[${new Date().toISOString()}] [接收] 检测到新命令。`);
+      console.log(`[${new Date().toISOString()}] [接收] 命令详情: ${data.command}`);
+
+      // 首先，将状态更新为 'processing'，并立即写回文件，告知外部调用者命令已开始处理。
+      data.status = 'processing';
+      await fs.writeFile(ioFilePath, JSON.stringify(data, null, 2));
+      console.log(`[${new Date().toISOString()}] [状态] 状态已更新为 'processing'。`);
+
+      console.log(`[${new Date().toISOString()}] [执行] 开始执行命令... (工作目录: ${data.cwd || process.cwd()})`);
+      // 使用 exec 执行 shell 命令。支持自定义工作目录 (cwd)。如果 io.json 中未指定 cwd，则使用脚本当前的工作目录。
+      exec(data.command, { cwd: data.cwd || process.cwd() }, async (error, stdout, stderr) => {
+        // 如果执行过程中出现错误...
+        if (error) {
+          console.error(`[${new Date().toISOString()}] [错误] 命令执行失败:`, error.message);
+          data.status = 'completed'; // 状态更新为 'completed'
+          data.error = stderr || error.message; // 将错误信息（优先使用 stderr）记录到 error 字段。
+          data.result = null; // 结果字段设为 null
+        } else {
+          // 如果命令执行成功...
+          console.log(`[${new Date().toISOString()}] [成功] 命令执行成功。`);
+          data.status = 'completed'; // 状态更新为 'completed'
+          data.result = stdout; // 将命令的标准输出 (stdout) 作为结果记录下来。
+          data.error = null; // 错误字段设为 null
         }
 
-        // Check for the command with each extension
-        for (const ext of pathExt) {
-            const extPath = fullPath + ext;
-            if (fs.existsSync(extPath)) {
-                return extPath;
-            }
-        }
+        // 将最终结果（无论成功或失败）写回 io.json 文件。
+        await fs.writeFile(ioFilePath, JSON.stringify(data, null, 2));
+        console.log(`[${new Date().toISOString()}] [状态] 状态已更新为 'completed'，结果已写回。`);
+        isProcessing = false; // 释放锁，允许脚本在下次轮询时处理新命令。
+      });
     }
-    return null;
-}
-
-// Clean command line to extract only the actual command without any injected environment variables
-function cleanCommandLine(cmdLine) {
-    // A more robust way to handle potentially polluted command lines.
-    // This regex looks for patterns like 'VAR=value' at the start of the string.
-    const cleaned = cmdLine.replace(/^([A-Z_]+\s*=\s*".*?"\s+|[A-Z_]+\s*=\s*'.*?'\s+|[A-Z_]+\s*=\s*[\S]+\s+)*/, '');
-    
-    // Now, find the first part of the remaining string that is an executable.
-    const parts = cleaned.trim().split(/\s+/);
-    let commandIndex = -1;
-
-    for (let i = 0; i < parts.length; i++) {
-        // Build up a potential command path (e.g., "C:\Program Files\...")
-        const potentialCmd = parts.slice(0, i + 1).join(' ');
-        if (which(potentialCmd)) {
-            commandIndex = i;
-            // We found a potential executable, but let's see if a longer path also matches
-            // This helps with commands that have spaces in their path.
-        } else if (commandIndex !== -1) {
-            // If we had a match but the current longer path doesn't match, the previous one was the real one.
-            break;
-        }
+  } catch (err) {
+    // 捕获读取或解析文件时可能发生的错误。
+    // 忽略常见且无害的错误，例如文件暂时不存在（ENOENT）或JSON格式不正确（通常是因为文件正在被写入）。
+    if (err.code !== 'ENOENT' && err.name !== 'SyntaxError') {
+      console.error(`[${new Date().toISOString()}] [严重] 处理文件时发生严重错误:`, err);
     }
-    
-    if (commandIndex !== -1) {
-        // Reconstruct the command and its arguments
-        const cmd = parts.slice(0, commandIndex + 1).join(' ');
-        const args = parts.slice(commandIndex + 1);
-        // Return the command in a way that exec can handle, with arguments separated.
-        // For simplicity here, we'll just join them back. exec is smart enough.
-        return [cmd, ...args].join(' ');
-    }
+    // 即使发生错误，也要确保释放锁，防止脚本被永久卡住。
+    isProcessing = false;
+  }
+};
 
-    // Fallback to original if no executable part is found.
-    return cmdLine;
-}
+// 启动轮询器。
+// 使用 setInterval 定时重复调用 processCommand 函数。
+setInterval(processCommand, pollInterval);
 
-// Initialize IO file if it doesn't exist
-function initIOFile() {
-    if (!fs.existsSync(IO_FILE)) {
-        const initialState = { status: 'idle', result: null };
-        fs.writeFileSync(IO_FILE, JSON.stringify(initialState, null, 2), 'utf8');
-        console.log('[proxy.js] Initialized io.json');
-    }
-}
-
-// Main polling loop
-function startPolling() {
-    console.log('[proxy.js] Proxy server started. Waiting for commands...');
-    
-    setInterval(() => {
-        try {
-            const raw = fs.readFileSync(IO_FILE, 'utf8');
-            const data = JSON.parse(raw);
-
-            if (data.status === 'pending') {
-                console.log('[proxy.js] Received command:', data.command_line);
-                
-                // Update status to processing
-                const processingState = { status: 'processing', ...data };
-                fs.writeFileSync(IO_FILE, JSON.stringify(processingState, null, 2), 'utf8');
-
-                // Execute the command
-                const cleanCmd = cleanCommandLine(data.command_line);
-                const cwd = data.cwd ? path.resolve(SKILL_DIR, data.cwd) : SKILL_DIR;
-                const execOptions = { cwd: cwd };
-
-                console.log(`[proxy.js] Executing: ${cleanCmd} (cwd: ${cwd})`);
-
-                exec(cleanCmd, execOptions, (error, stdout, stderr) => {
-                    const resultPayload = {
-                        status: 'completed',
-                        result: {
-                            stdout: stdout,
-                            stderr: stderr,
-                            exit_code: error ? error.code : 0
-                        }
-                    };
-                    fs.writeFileSync(IO_FILE, JSON.stringify(resultPayload, null, 2), 'utf8');
-                    console.log('[proxy.js] Command completed. Result written to io.json');
-                });
-            }
-        } catch (err) {
-            // Ignore JSON parse errors, file is likely being written to
-        }
-    }, 500); // Poll every 500ms
-}
-
-// Start
-initIOFile();
-startPolling();
+console.log(`[${new Date().toISOString()}] [信息] 轮询已启动，每 ${pollInterval}ms 检查一次。`);
