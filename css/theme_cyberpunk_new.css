@@ -156,13 +156,19 @@ button:hover::before, .fab:hover::before {
     color: var(--primary-color);
 }
 
+@keyframes text-gradient-flow {
+    to {
+        background-position: 200% center;
+    }
+}
+
 /* --- Sidebar --- */
 .sidebar-block ul {
     list-style: none;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
 }
 
 .sidebar-block li {
@@ -172,20 +178,33 @@ button:hover::before, .fab:hover::before {
 .sidebar-block li a {
     display: inline-block;
     padding: 8px 16px;
-    border: 1px solid var(--border-color);
     border-radius: 50px;
-    color: var(--primary-color);
-    font-weight: 400;
+    font-weight: 500;
     transition: all 0.3s ease;
-    text-shadow: 0 0 3px rgba(0, 217, 255, 0.5);
+    
+    /* Gradient Border */
+    border: 1px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, var(--primary-color), var(--secondary-glow-color));
+
+    /* Animated Gradient Text */
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-glow-color), var(--primary-color));
+    background-size: 200% auto;
+    color: #000; /* Fallback */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-gradient-flow 3s linear infinite;
 }
 
 .sidebar-block li a:hover,
 .sidebar-block li a.active {
-    color: var(--bg-color);
-    font-weight: 700;
     background: var(--primary-color);
+    -webkit-text-fill-color: var(--bg-color);
+    background-clip: initial;
+    border-image-source: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 10px var(--primary-color);
-    text-shadow: none;
+    animation: none;
+    font-weight: 700;
 }
