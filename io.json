@@ -1,0 +1,8 @@
+{
+  "status": "completed",
+  "result": {
+    "stdout": "Starting up http-server, serving ./public\n\nhttp-server version: 14.1.1\n\nhttp-server settings: \nCORS: disabled\nCache: 3600 seconds\nConnection Timeout: 120 seconds\nDirectory Listings: visible\nAutoIndex: visible\nServe GZIP Files: false\nServe Brotli Files: false\nDefault File Extension: none\n\nAvailable on:\n  http://192.168.0.102:8089\n  http://127.0.0.1:8089\nHit CTRL-C to stop the server\n\n��ֹ������������(Y/N)? ",
+    "stderr": "npm warn Unknown user config \"shamefully-hoist\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\n^C",
+    "exit_code": 3221225786
+  }
+}

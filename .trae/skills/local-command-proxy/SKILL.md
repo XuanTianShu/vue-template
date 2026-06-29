@@ -6,7 +6,7 @@ description: "Provides a reliable command execution channel via a local Node.js 
 # Local Command Proxy
 
 ## 工作原理
-本技能通过在技能目录内运行一个 Node.js 代理脚本 (`proxy.js`)，通过读写同目录下的 `io.json` 文件进行双向通信，以此绕过 Agent 自带 `RunCommand` 工具受限的执行环境。技能触发时会自动检测并启动 `proxy.js` 代理服务。
+通过开发者手动启动代理脚本 (`proxy.js`)，读写同目录下的 `io.json` 文件进行双向通信，以此绕过 Agent 自带 `RunCommand` 工具受限的执行环境。技能触发时会自动检测并启动 `proxy.js` 代理服务。
 
 ## 技能目录结构
 ```
