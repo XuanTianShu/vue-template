@@ -8,7 +8,7 @@ export const AVAILABLE_THEMES = [
 export type ThemeValue = typeof AVAILABLE_THEMES[number]['value']
 
 // Default theme if none is selected
-export const DEFAULT_THEME: ThemeValue = 'modern'
+export const DEFAULT_THEME: ThemeValue = 'cyberpunk_new'
 
 // Theme stylesheet path generator
 export function getThemePath(themeName: ThemeValue): string {

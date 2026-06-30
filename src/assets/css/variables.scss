@@ -1,0 +1,50 @@
+// 颜色变量 - 与原始UI完全一致
+$primary-color: #007bff;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+
+// 文字颜色 - 原始设计值
+$text-primary: #212529;
+$text-regular: #343a40;
+$text-secondary: #6c757d;
+$text-placeholder: #adb5bd;
+
+// 边框颜色 - 原始设计值
+$border-color: #dee2e6;
+$border-light-color: #e9ecef;
+$border-lighter-color: #f1f3f5;
+$border-extra-light-color: #f8f9fa;
+
+// 背景颜色 - 原始设计值
+$bg-color: #ffffff;
+$bg-page-color: #f8f9fa;
+
+// 间距
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// 字体大小
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+
+// 圆角
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+
+// 阴影
+$box-shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+$box-shadow-dark: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+
+// 过渡动画
+$transition-base: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);

@@ -14,6 +14,13 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@use "@/assets/css/variables.scss" as *; @use "sass:color";`,
+      },
+    },
+  },
   server: {
     port: 3000,
     open: '/', // 开发服务器默认打开标准Vue入口

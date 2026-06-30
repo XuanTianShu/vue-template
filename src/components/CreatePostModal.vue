@@ -4,6 +4,7 @@ import type { SubmitResult } from '../types'
 
 const props = defineProps<{
   show: boolean
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -71,14 +72,14 @@ function showFeedback(message: string, type: 'success' | 'error') {
         <textarea 
           v-model="newPostContent" 
           placeholder="What's on your mind?"
-          :disabled="isSubmitting"
+          :disabled="isSubmitting || (props.loading ?? false)"
         ></textarea>
         <button 
           id="submit-post-btn" 
           @click="handleSubmit"
-          :disabled="isSubmitting"
+          :disabled="isSubmitting || (props.loading ?? false)"
         >
-          {{ isSubmitting ? '发布中...' : 'Post' }}
+          {{ (isSubmitting || (props.loading ?? false)) ? '发布中...' : '发布' }}
         </button>
         <p 
           v-if="feedbackMessage" 

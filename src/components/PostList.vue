@@ -85,7 +85,7 @@ function handleViewDetails(post: Post) {
               <p>{{ post.content }}</p>
               <div class="post-meta">
                 <span><i class="fa-solid fa-heart"></i> {{ post.likes }}</span>
-                <span><i class="fa-solid fa-comment"></i> {{ post.commentCount }} comments</span>
+                <span><i class="fa-solid fa-comment"></i> {{ post.commentsCount }} comments</span>
                 <a href="#" class="view-details-link" @click.prevent="handleViewDetails(post)">View Details</a>
               </div>
             </div>

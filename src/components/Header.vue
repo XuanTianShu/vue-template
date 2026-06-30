@@ -38,11 +38,14 @@ function handleThemeChange(event: Event) {
   </header>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+
+
 .site-header {
-  background: inherit;
-  border-bottom: 1px solid inherit;
+  background-color: var(--card-bg-color, var(--panel-bg-color, #ffffff));
+  border-bottom: 1px solid var(--border-color, #dee2e6);
   padding: 1rem 20px;
+  box-shadow: var(--shadow, 0 1px 3px rgba(0, 0, 0, 0.05));
 }
 
 .header-content {
@@ -59,6 +62,7 @@ function handleThemeChange(event: Event) {
   font-weight: 700;
   margin: 0;
   white-space: nowrap;
+  color: var(--text-color);
 }
 
 .search-container {
@@ -69,27 +73,42 @@ function handleThemeChange(event: Event) {
 }
 
 .search-container input {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width: 100%;
+  border-right: none;
+  border-radius: var(--border-radius, 6px) 0 0 var(--border-radius, 6px);
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #dee2e6);
   font-size: 0.9rem;
+  background-color: var(--bg-color, #f8f9fa);
+  color: var(--text-color);
+  
+  &::placeholder {
+    color: var(--subtle-text-color, #6c757d);
+  }
 }
 
 .search-container button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 0 var(--border-radius, 6px) var(--border-radius, 6px) 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #dee2e6);
   cursor: pointer;
-  background: #f5f5f5;
+  background-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.1);
+  color: var(--text-color);
+  transition: $transition-base;
+  
+  &:hover {
+    background-color: rgba(var(--primary-color-rgb, 0, 123, 255), 0.2);
+  }
 }
 
 .theme-switcher select {
   padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  border-radius: var(--border-radius, 6px);
+  border: 1px solid var(--border-color, #dee2e6);
   font-size: 0.9rem;
   cursor: pointer;
+  background-color: var(--bg-color, #f8f9fa);
+  color: var(--text-color);
 }
 
 @media (max-width: 768px) {

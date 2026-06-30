@@ -1,0 +1,272 @@
+// 三个主题的SCSS实现 - 完全参考ui.html中的主题设计自主实现
+// 通过根类切换来实现主题切换，不直接使用原CSS文件
+
+// Modern主题 - 简约现代风格
+:root.modern {
+  --bg-color: #f8f9fa;
+  --text-color: #212529;
+  --subtle-text-color: #6c757d;
+  --primary-color: #007bff;
+  --primary-color-rgb: 0, 123, 255;
+  --card-bg-color: #ffffff;
+  --border-color: #dee2e6;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 7px 14px rgba(0, 0, 0, 0.07);
+  --font-main: 'Inter', sans-serif;
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+}
+
+// Cyberpunk主题 - 赛博朋克风格
+:root.cyberpunk_new {
+  --bg-color: #0a0a0c;
+  --text-color: #b0c4de;
+  --subtle-text-color: #8892a0;
+  --primary-color: #00d9ff;
+  --primary-color-rgb: 0, 217, 255;
+  --panel-bg-color: rgba(16, 20, 28, 0.85);
+  --border-color: rgba(0, 217, 255, 0.2);
+  --border-color-active: rgba(0, 217, 255, 0.8);
+  --font-heading: 'Orbitron', sans-serif;
+  --font-body: 'Roboto Mono', monospace;
+  --border-radius: 4px;
+  --border-radius-sm: 4px;
+  
+  // 背景六边形网格效果
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCI+PHBhdGggZD0iTTE1IDAgTCAzMCA3LjUgTCAzMCAyMi41IEwgMTUgMzAgTCAwIDIyLjUgTCAwIDcuNSBaIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMCwgMjE3LCAyNTUsIDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=');
+    opacity: 0.5;
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.02); }
+  }
+}
+
+// Neumorphism主题 - 新拟态风格
+:root.neumorphism {
+  --bg-color: #e0e5ec;
+  --text-color: #5a667a;
+  --subtle-text-color: #8a99b1;
+  --primary-color: #4a77e5;
+  --primary-color-rgb: 74, 119, 229;
+  --shadow-light: #ffffff;
+  --shadow-dark: #a3b1c6;
+  --font-main: 'Poppins', sans-serif;
+  --border-radius: 20px;
+  --border-radius-sm: 15px;
+}
+
+// Neumorphism主题的组件样式
+:root.neumorphism {
+  .site-header, .site-footer {
+    background-color: var(--bg-color);
+    border: none;
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  }
+  
+  .post-item, .sidebar-block, .modal-content {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+  }
+  
+  .post-item:hover {
+    box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+  }
+  
+  // 搜索框的新拟态内凹效果
+  .search-container input {
+    background-color: var(--bg-color);
+    border: none;
+    box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  }
+  
+  .search-container button {
+    background-color: var(--bg-color);
+    border: none;
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  }
+  
+  .search-container button:hover {
+    box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+  }
+  
+  // 主题选择器的新拟态样式
+  .theme-switcher select {
+    background-color: var(--bg-color);
+    border: none;
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  }
+  
+  a {
+    color: var(--primary-color);
+  }
+}
+  
+// 基础变量应用 - 所有组件都使用这些CSS变量
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main, 'Inter', sans-serif);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+// 通用组件样式 - 所有主题共享的基础样式
+.site-header, .site-footer,
+.post-item, .sidebar-block, .modal-content {
+  transition: all 0.3s ease;
+}
+
+// Modern主题的组件样式
+:root.modern {
+  .site-header, .site-footer {
+    background-color: var(--card-bg-color);
+    border-color: var(--border-color);
+  }
+  
+  .post-item, .sidebar-block, .modal-content {
+    background-color: var(--card-bg-color);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+  }
+  
+  .post-item:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: #cde4fe;
+  }
+  
+  a {
+    color: var(--primary-color);
+    transition: color 0.2s;
+  }
+  
+  a:hover {
+    color: #0056b3;
+  }
+}
+
+// Cyberpunk主题的组件样式
+:root.cyberpunk_new {
+  .site-header, .site-footer,
+  .post-item, .sidebar-block, .modal-content {
+    background: var(--panel-bg-color);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    position: relative;
+    transition: border-color 0.4s ease;
+  }
+  
+  .post-item::before, .modal-content::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: radial-gradient(circle at top left, var(--primary-color), transparent 30%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .post-item:hover, .modal-content:focus-within {
+    border-color: var(--border-color-active);
+  }
+  
+  .post-item:hover::before, .modal-content:focus-within::before {
+    opacity: 0.5;
+  }
+  
+  .site-title, h1, h2, h3 {
+    font-family: var(--font-heading);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 5px var(--primary-color);
+  }
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  
+  a:hover {
+    color: #fff;
+    text-shadow: 0 0 8px var(--primary-color);
+  }
+}
+
+// Neumorphism主题的组件样式
+:root.neumorphism {
+  .neumorphic-flat {
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 
+      -7px -7px 20px 0px var(--shadow-light),
+      7px 7px 20px 0px var(--shadow-dark);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .neumorphic-inset {
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 
+      inset -7px -7px 20px 0px var(--shadow-light),
+      inset 7px 7px 20px 0px var(--shadow-dark);
+  }
+  
+  .site-header, .site-footer,
+  .post-item, .sidebar-block, .modal-content {
+    background: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: 
+      -7px -7px 20px 0px var(--shadow-light),
+      7px 7px 20px 0px var(--shadow-dark);
+    transition: box-shadow 0.3s ease;
+    border: none;
+  }
+  
+  .site-header, .site-footer {
+    border-radius: 0;
+  }
+  
+  .post-item:hover {
+    box-shadow: 
+      -4px -4px 15px 0px var(--shadow-light),
+      4px 4px 15px 0px var(--shadow-dark);
+  }
+  
+  button, .fab {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    box-shadow: 
+      -5px -5px 10px 0px var(--shadow-light),
+      5px 5px 10px 0px var(--shadow-dark);
+    transition: box-shadow 0.2s ease-out, color 0.2s ease-out;
+  }
+  
+  button:hover, .fab:hover {
+    color: var(--primary-color);
+  }
+  
+  button:active, .fab:active {
+    box-shadow: 
+      inset -5px -5px 10px 0px var(--shadow-light),
+      inset 5px 5px 10px 0px var(--shadow-dark);
+    color: var(--primary-color);
+  }
+}

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { AVAILABLE_THEMES, DEFAULT_THEME, getThemePath, type ThemeValue } from '../../constants/themes'
+import { ref, watchEffect } from 'vue'
+import { AVAILABLE_THEMES, DEFAULT_THEME, type ThemeValue } from '../../constants/themes'
 
 export const useThemeStore = defineStore('theme', () => {
   // Load theme from localStorage
@@ -16,31 +16,25 @@ export const useThemeStore = defineStore('theme', () => {
   function setTheme(theme: ThemeValue) {
     currentTheme.value = theme
     localStorage.setItem('selectedTheme', theme)
-    updateThemeStylesheet(theme)
   }
 
-  function updateThemeStylesheet(themeName: ThemeValue) {
-    const themePath = getThemePath(themeName)
-    let themeLink = document.getElementById('theme-stylesheet-dynamic') as HTMLLinkElement
-    
-    if (!themeLink) {
-      themeLink = document.createElement('link')
-      themeLink.rel = 'stylesheet'
-      themeLink.id = 'theme-stylesheet-dynamic'
-      document.head.appendChild(themeLink)
-    }
-    themeLink.href = themePath
-  }
-
-  // Initialize theme on store creation
-  updateThemeStylesheet(currentTheme.value)
+  // 监听主题变化，更新根元素的 class
+  watchEffect(() => {
+    // 移除所有主题类
+    AVAILABLE_THEMES.forEach(t => {
+      document.documentElement.classList.remove(t.value)
+    })
+    // 添加当前主题类
+    document.documentElement.classList.add(currentTheme.value)
+  })
 
   return {
     // State
     currentTheme,
+    // 导出可用主题列表供 UI 使用
+    AVAILABLE_THEMES,
     
     // Actions
-    setTheme,
-    updateThemeStylesheet
+    setTheme
   }
 })
