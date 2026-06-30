@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Post, Comment } from '../types'
-import { checkRateLimit, updateLastPostTime } from '../utils/rateLimit'
+import type { Post, Comment } from '../../types'
+import { checkRateLimit, updateLastPostTime } from '../../utils/rateLimit'
 
 // 生成唯一ID
 function generateId(): string {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { AVAILABLE_THEMES, DEFAULT_THEME, getThemePath, type ThemeValue } from '../constants/themes'
+import { AVAILABLE_THEMES, DEFAULT_THEME, getThemePath, type ThemeValue } from '../../constants/themes'
 
 export const useThemeStore = defineStore('theme', () => {
   // Load theme from localStorage

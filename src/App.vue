@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { usePostsStore } from './stores/usePostsStore'
-import { useThemeStore } from './stores/useThemeStore'
+import { usePostsStore, useThemeStore } from '@/stores'
 import type { Post, ThemeValue } from './types'
 import PostList from './components/PostList.vue'
 import PostDetail from './components/PostDetail.vue'
