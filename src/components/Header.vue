@@ -49,7 +49,7 @@ function handleThemeChange(event: Event) {
 }
 
 .header-content {
-  max-width: 1400px;
+  width: calc(100% - 30px); /* 和首页保持一致，左右各留15px */
   margin: 0 auto;
   display: flex;
   align-items: center;

@@ -84,6 +84,9 @@ async function handleCreatePost(content: string): Promise<{ success: boolean; me
 
 main {
   flex: 1;
+  width: 100%;
+  margin: 0;
+  padding-bottom: 80px; /* 给所有页面添加底部padding，避免被固定footer遮挡 */
 }
 
 /* 全局工具类 */

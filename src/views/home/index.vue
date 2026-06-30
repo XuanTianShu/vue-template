@@ -188,17 +188,22 @@ onUnmounted(() => {
 
 
 .home-page {
-  padding: $spacing-md;
+  padding: $spacing-md 15px 80px; /* 底部添加80pxpadding，避免被固定footer遮挡 */
   min-height: calc(100vh - 120px);
   background-color: var(--bg-color);
 }
 
 .home-layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 30px;
-  max-width: 1400px;
+  grid-template-columns: 220px 1fr;
+  gap: 25px;
+  width: calc(100% - 30px); /* 左右各留15px空白 */
   margin: 0 auto;
+  
+  // 响应式适配，小屏幕上改为垂直布局
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .main-content {
@@ -238,10 +243,24 @@ onUnmounted(() => {
   
   #post-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(5, 1fr); /* 一行固定5个卡片 */
     gap: 20px;
     padding: 0;
     border: none;
+    
+    // 响应式适配，确保在不同屏幕尺寸下都有良好的显示效果
+    @media (max-width: 1600px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 1400px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
     
     // 为每个帖子添加渐进式延迟，与原始ui.html动画逻辑完全一致
     .post-item:nth-child(1) { transition-delay: 0.1s; }
