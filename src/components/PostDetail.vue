@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { getComments } from '../services/firebase'
+import { ref } from 'vue'
 import type { Post, Comment, SubmitResult } from '../types'
 
 const props = defineProps<{
   post: Post
+  comments: Comment[]
 }>()
 
 const emit = defineEmits<{
@@ -12,25 +12,10 @@ const emit = defineEmits<{
   (e: 'add-comment', postId: string, content: string): Promise<SubmitResult>
 }>()
 
-const comments = ref<Comment[]>([])
 const newCommentContent = ref('')
 const isSubmitting = ref(false)
 const feedbackMessage = ref('')
 const feedbackType = ref<'success' | 'error' | ''>('')
-let commentsUnsubscribe: (() => void) | null = null
-
-// Load comments when component mounts
-onMounted(async () => {
-  commentsUnsubscribe = await getComments(props.post.id, (newComments) => {
-    comments.value = newComments
-  })
-})
-
-onUnmounted(() => {
-  if (commentsUnsubscribe) {
-    commentsUnsubscribe()
-  }
-})
 
 function handleBack() {
   emit('back')
@@ -103,23 +88,23 @@ function formatDate(date: Date): string {
           <p>{{ post.content }}</p>
           <div class="post-meta">
             <span><i class="fa-solid fa-heart"></i> {{ post.likes }}</span>
-            <span><i class="fa-solid fa-comment"></i> {{ comments.length }} comments</span>
+            <span><i class="fa-solid fa-comment"></i> {{ props.comments.length }} comments</span>
           </div>
         </div>
         
         <hr>
         
         <div class="comments-section">
-          <h2><span>{{ comments.length }}</span> Comments</h2>
+          <h2><span>{{ props.comments.length }}</span> Comments</h2>
           
           <div id="comment-list">
-            <div class="comment-item" v-for="comment in comments" :key="comment.id">
+            <div class="comment-item" v-for="comment in props.comments" :key="comment.id">
               <p>{{ comment.content }}</p>
               <span class="comment-meta">{{ formatDate(comment.createdAt) }}</span>
             </div>
             
             <!-- Empty comments state -->
-            <div v-if="comments.length === 0" class="empty-comments">
+            <div v-if="props.comments.length === 0" class="empty-comments">
               <p>暂无评论，来抢沙发吧！</p>
             </div>
           </div>

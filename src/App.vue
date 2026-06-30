@@ -84,6 +84,7 @@ async function handleAddComment(postId: string, content: string): Promise<{ succ
         <PostDetail 
           v-if="selectedPost"
           :post="selectedPost"
+          :comments="currentPostComments"
           @back="goBackHome"
           @add-comment="handleAddComment"
         />
