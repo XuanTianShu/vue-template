@@ -1,120 +1,64 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { initFirebase, createPost, getPosts, addComment } from './services/firebase'
-import { checkRateLimit, updateLastPostTime } from './utils/rateLimit'
-import { AVAILABLE_THEMES, DEFAULT_THEME, getThemePath, type ThemeValue } from './constants/themes'
-import type { Post } from './types'
+import { ref, onMounted, computed } from 'vue'
+import { usePostsStore } from './stores/usePostsStore'
+import { useThemeStore } from './stores/useThemeStore'
+import type { Post, ThemeValue } from './types'
 import PostList from './components/PostList.vue'
 import PostDetail from './components/PostDetail.vue'
 import CreatePostModal from './components/CreatePostModal.vue'
 import Header from './components/Header.vue'
 import Footer from './components/Footer.vue'
 
-// Current page state
-const currentPage = ref<'home' | 'detail'>('home')
-const selectedPost = ref<Post | null>(null)
+// Initialize stores
+const postsStore = usePostsStore()
+const themeStore = useThemeStore()
+
+// Local UI state only (no shared state here)
 const showCreateModal = ref(false)
-const isLoading = ref(false)
-const error = ref<string | null>(null)
-const firebaseReady = ref(false)
+const currentPage = ref<'home' | 'detail'>('home')
 
-// Theme state
-const storedTheme = localStorage.getItem('selectedTheme')
-const isValidTheme = (theme: string | null): theme is ThemeValue => {
-  return AVAILABLE_THEMES.some(t => t.value === theme)
-}
-const currentTheme = ref<ThemeValue>(isValidTheme(storedTheme) ? storedTheme : DEFAULT_THEME)
-
-// Posts state
-const posts = ref<Post[]>([])
-let postsUnsubscribe: (() => void) | null = null
-
-// Initialize Firebase
+// Initialize app
 onMounted(async () => {
-  const result = await initFirebase()
-  firebaseReady.value = result.ready
-  
-  // Load posts
-  if (result.ready) {
-    postsUnsubscribe = await getPosts((newPosts) => {
-      posts.value = newPosts
-    })
-  }
+  await postsStore.initialize()
 })
 
-onUnmounted(() => {
-  if (postsUnsubscribe) {
-    postsUnsubscribe()
-  }
-})
+// Computed state from stores
+const currentTheme = computed(() => themeStore.currentTheme)
+const posts = computed(() => postsStore.posts)
+const selectedPost = computed(() => postsStore.currentPost)
+const currentPostComments = computed(() => postsStore.currentPostComments)
+const isLoading = computed(() => postsStore.isLoading)
+const error = computed(() => postsStore.error)
 
-// Theme switching
+// Theme switching - delegate to store
 function setTheme(theme: ThemeValue) {
-  currentTheme.value = theme
-  localStorage.setItem('selectedTheme', theme)
-  updateThemeStylesheet(theme)
+  themeStore.setTheme(theme)
 }
 
-function updateThemeStylesheet(themeName: ThemeValue) {
-  const themePath = getThemePath(themeName)
-  let themeLink = document.getElementById('theme-stylesheet-dynamic') as HTMLLinkElement
-  
-  if (!themeLink) {
-    themeLink = document.createElement('link')
-    themeLink.rel = 'stylesheet'
-    themeLink.id = 'theme-stylesheet-dynamic'
-    document.head.appendChild(themeLink)
-  }
-  themeLink.href = themePath
-}
-
-// Navigation
-function viewPostDetail(post: any) {
-  selectedPost.value = post
+// Navigation - delegate to store
+function viewPostDetail(post: Post) {
+  postsStore.viewPostDetail(post)
   currentPage.value = 'detail'
-  window.scrollTo(0, 0)
 }
 
 function goBackHome() {
+  postsStore.goBackHome()
   currentPage.value = 'home'
-  selectedPost.value = null
 }
 
-// Create post
+// Create post - delegate to store
 async function handleCreatePost(content: string): Promise<{ success: boolean; message: string }> {
-  // Check rate limit
-  if (!checkRateLimit()) {
-    return { success: false, message: '发布过于频繁，请5分钟后再试' }
+  const result = await postsStore.createNewPost(content)
+  if (result.success) {
+    showCreateModal.value = false
   }
-  
-  try {
-    await createPost(content)
-    updateLastPostTime()
-    return { success: true, message: '发布成功！' }
-  } catch (err) {
-    return { success: false, message: '发布失败，请重试' }
-  }
+  return result
 }
 
-// Add comment
+// Add comment - delegate to store
 async function handleAddComment(postId: string, content: string): Promise<{ success: boolean; message: string }> {
-  if (!checkRateLimit()) {
-    return { success: false, message: '评论过于频繁，请5分钟后再试' }
-  }
-  
-  try {
-    await addComment(postId, content)
-    updateLastPostTime()
-    return { success: true, message: '评论成功！' }
-  } catch (err) {
-    return { success: false, message: '评论失败，请重试' }
-  }
+  return postsStore.addNewComment(postId, content)
 }
-
-// Initialize theme on mount
-onMounted(() => {
-  updateThemeStylesheet(currentTheme.value)
-})
 </script>
 
 <template>
